@@ -2,3 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT(luagame)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -Wextra -Weffc++ -Werror")
+
+INCLUDE_DIRECTORIES(include)
+
+ADD_SUBDIRECTORY(src)
