@@ -1,4 +1,5 @@
 SET(SRC_FILES
+		function_wrapper.cpp
 		luabox.cpp
 		luaerror.cpp
 )
