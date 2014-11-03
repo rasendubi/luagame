@@ -96,7 +96,8 @@ namespace Luagame_impl {
 	template<typename F, int N>
 	struct tuple_builder {
 		static constexpr auto i = function_traits<F>::arity - N;
-		using type = typename function_traits<F>::template argument<i>::type;
+		using original_type = typename function_traits<F>::template argument<i>::type;
+		using type = typename std::remove_const<typename std::remove_reference<original_type>::type>::type;
 
 		static auto build(lua_State *state) ->
 				decltype(std::tuple_cat(std::tuple<type>(), tuple_builder<F, N - 1>::build(state))) {
