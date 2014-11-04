@@ -46,4 +46,10 @@ namespace Luagame_impl {
 		return 1;
 	}
 
+	template<>
+	int put_value(lua_State *state, const char *str) {
+		lua_pushstring(state, str);
+		return 1;
+	}
+
 }

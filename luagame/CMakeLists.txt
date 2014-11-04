@@ -6,3 +6,4 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -Wextra -Weffc++ -Werro
 INCLUDE_DIRECTORIES(include)
 
 ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(tests)
