@@ -1,8 +1,6 @@
 #ifndef LUAGAME_LUABOX_H_
 #define LUAGAME_LUABOX_H_
 
-#include <iostream>
-
 #include <memory>
 #include <type_traits>
 
@@ -45,7 +43,6 @@ namespace Luagame {
 					register_function(const std::string& name, F function) {
 				using Luagame_impl::function_wrapper;
 				void *data = lua_newuserdata(state.get(), sizeof(F));
-				std::cout << "forwarding: ";
 				new(data) F(std::forward<F>(function));
 
 				lua_createtable(state.get(), 0, 1);
@@ -74,6 +71,12 @@ namespace Luagame {
 				using Luagame_impl::function_wrapper;
 				lua_pushlightuserdata(state.get(), reinterpret_cast<void *>(function));
 				lua_pushcclosure(state.get(), function_wrapper<F>::caller, 1);
+				lua_setglobal(state.get(), name.c_str());
+			}
+
+			template<typename T>
+			void register_value(const std::string& name, T value) {
+				Luagame_impl::put_value(state.get(), value);
 				lua_setglobal(state.get(), name.c_str());
 			}
 

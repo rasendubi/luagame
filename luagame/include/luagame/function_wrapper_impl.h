@@ -11,9 +11,9 @@ namespace Luagame_impl {
 	template<typename Arg>
 	Arg get_arg(lua_State *state, int n);
 
-	/* Puts result on lua stack and return number of values */
+	/* Puts value on lua stack and return number of values */
 	template<typename R>
-	int put_result(lua_State *state, R result);
+	int put_value(lua_State *state, R result);
 
 	template<typename F, int N>
 	struct tuple_builder;
@@ -53,7 +53,7 @@ namespace Luagame_impl {
 	template<typename F, typename R>
 	struct processor {
 		static int process(lua_State *state, F* function) {
-			return put_result(state, function_caller<F>::call(function, state));
+			return put_value(state, function_caller<F>::call(function, state));
 		}
 	};
 
