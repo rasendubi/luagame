@@ -33,7 +33,7 @@ TEST(luabox, register_function) {
 				result = str;
 			});
 
-	box.run_file("tests/files/register_function.lua");
+	box.run_file("files/register_function.lua");
 
 	EXPECT_EQ("21", result);
 }
@@ -49,7 +49,7 @@ TEST(luabox, register_value) {
 	box.register_function("a_is", [&](int a) { A = a; });
 	box.register_function("bb_is", [&](std::string bb) { BB = bb; });
 
-	box.run_file("tests/files/register_value.lua");
+	box.run_file("files/register_value.lua");
 
 	EXPECT_EQ(15, A);
 	EXPECT_EQ("hello", BB);
@@ -63,7 +63,7 @@ TEST(luabox, open_lib) {
 	int result;
 	box.register_function("finish", [&](int a){ result = a; });
 
-	box.run_file("tests/files/open_lib.lua");
+	box.run_file("files/open_lib.lua");
 
 	EXPECT_EQ(1, result);
 }

@@ -3,6 +3,8 @@ PROJECT(luagame)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -Wextra -Weffc++ -Werror")
 
+ENABLE_TESTING()
+
 INCLUDE_DIRECTORIES(include)
 
 ADD_SUBDIRECTORY(src)
