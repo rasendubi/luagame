@@ -35,3 +35,7 @@ void Luagame::Luabox::register_function(const std::string& name, lua_CFunction f
 	lua_pushcfunction(state.get(), function);
 	lua_setglobal(state.get(), name.c_str());
 }
+
+void Luagame::Luabox::set_hook(lua_Hook func, Luagame::Luamask mask, int count) {
+	lua_sethook(state.get(), func, static_cast<int>(mask), count);
+}

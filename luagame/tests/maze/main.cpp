@@ -18,7 +18,7 @@ struct position {
 	int x, y;
 };
 
-position step(position pos, direction dir) {
+static position step(position pos, direction dir) {
 	if (dir == direction::UP) {
 		return {pos.x - 1, pos.y};
 	} else if (dir == direction::DOWN) {
@@ -29,6 +29,11 @@ position step(position pos, direction dir) {
 		return {pos.x, pos.y + 1};
 	}
 	return { -1, -1 };
+}
+
+static void hook(lua_State *, lua_Debug *) {
+	std::cout << "Test timed out" << std::endl;
+	std::exit(-3);
 }
 
 int main(int argc, char *argv[]) try {
@@ -70,6 +75,8 @@ int main(int argc, char *argv[]) try {
 				cur = next;
 				return true;
 			});
+
+	box.set_hook(hook, Luagame::Luamask::Count, 1000);
 
 	box.run_file(argv[1]);
 	return -1;

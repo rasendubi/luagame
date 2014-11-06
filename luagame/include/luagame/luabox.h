@@ -13,6 +13,17 @@ extern "C" {
 
 namespace Luagame {
 
+	enum class Luamask : int {
+		None = 0,
+		Call = LUA_MASKCALL,
+		Return = LUA_MASKRET,
+		Line = LUA_MASKLINE,
+		Count = LUA_MASKCOUNT,
+	};
+
+	inline Luamask operator|(Luamask a, Luamask b) {
+		return static_cast<Luamask>(static_cast<int>(a) | static_cast<int>(b));
+	}
 
 	/**
 	 * This is a base class for all Lua robots.
@@ -79,6 +90,8 @@ namespace Luagame {
 				Luagame_impl::put_value(state.get(), value);
 				lua_setglobal(state.get(), name.c_str());
 			}
+
+			void set_hook(lua_Hook func, Luamask mask, int count = 0);
 
 		private:
 
