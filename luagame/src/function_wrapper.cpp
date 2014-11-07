@@ -1,6 +1,7 @@
 #include "luagame/function_wrapper_impl.h"
 
 #include <type_traits>
+#include <string>
 
 namespace Luagame_impl {
 	template<>

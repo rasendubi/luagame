@@ -15,7 +15,7 @@ namespace Luagame_impl {
 	template<typename R>
 	int put_value(lua_State *state, R result);
 
-	template<typename F, int N>
+	template<typename F, size_t N>
 	struct tuple_builder;
 
 	template<typename F>
@@ -93,9 +93,9 @@ namespace Luagame_impl {
 	};
 
 
-	template<typename F, int N>
+	template<typename F, size_t N>
 	struct tuple_builder {
-		static constexpr auto i = function_traits<F>::arity - N;
+		static constexpr size_t i{function_traits<F>::arity - N};
 		using original_type = typename function_traits<F>::template argument<i>::type;
 		using type = typename std::remove_const<typename std::remove_reference<original_type>::type>::type;
 
