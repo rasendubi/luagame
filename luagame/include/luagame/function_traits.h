@@ -25,7 +25,6 @@ struct function_traits<R(Args...)>
         using type = typename std::tuple_element<N,std::tuple<Args...>>::type;
     };
 
-	virtual ~function_traits() {}
 };
 
 // member function pointer
@@ -60,7 +59,6 @@ struct function_traits
             static_assert(N < arity, "error: invalid parameter index.");
             using type = typename call_type::template argument<N+1>::type;
         };
-		virtual ~function_traits() {}
 };
 
 template<class F>

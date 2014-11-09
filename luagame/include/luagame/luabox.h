@@ -13,11 +13,39 @@ extern "C" {
 
 namespace Luagame {
 
+	/**
+	 * Mask type for setting hook.
+	 */
 	enum class Luamask : int {
 		None = 0,
+		/**
+		 * The hook is called just after Lua enters the new function,
+		 * before the function gets its arguments.
+		 *
+		 * \see LUA_MASKCALL
+		 */
 		Call = LUA_MASKCALL,
+		/**
+		 * The hook is called just before Lua leaves the function.
+		 *
+		 * \see LUA_MASKRET
+		 */
 		Return = LUA_MASKRET,
+		/**
+		 * The hook is called when the interpreter is about to start
+		 * the execution of a new line of code, or when it jumps back
+		 * in the code (even to the same line).
+		 *
+		 * \note This event only happens while Lua is executing a Lua function.
+		 * \see LUA_MASKLINE
+		 */
 		Line = LUA_MASKLINE,
+		/**
+		 * is called after the interpreter executes every count instructions.
+		 *
+		 * \note This event only happens while Lua is executing a Lua function.
+		 * \see LUA_MASKCOUNT
+		 */
 		Count = LUA_MASKCOUNT,
 	};
 
@@ -37,26 +65,61 @@ namespace Luagame {
 			 */
 			Luabox() throw (Lua_error);
 
+			/**
+			 * Loads specified file on top of lua state.
+			 *
+			 * \see Luabox::run()
+			 * \see Luabox::set_file()
+			 */
 			Luabox(const std::string& filename) : Luabox() {
 				set_file(filename);
 			}
 
 			Luabox(const Luabox&) = delete;
-			Luabox(Luabox&& box);
-
 			Luabox& operator=(const Luabox&) = delete;
-			Luabox& operator=(Luabox&& box);
 
-			void run_file(const char *filename);
+			Luabox(Luabox&&) = default;
+			Luabox& operator=(Luabox&&) = default;
 
+			void run_file(const std::string& filename);
+
+			/**
+			 * Loads given file and places it on top of stack as function.
+			 *
+			 * \warning Be sure to not leave other values on top of function
+			 *     before calling \c run() (unless you now what you're doing).
+			 *
+			 * \see Luabox::run()
+			 */
 			void set_file(const std::string& filename);
 
+			/**
+			 * Executes function placed on top of the stack.
+			 *
+			 * \see Luabox::set_file()
+			 * \see Luabox::run_file()
+			 */
 			void run();
 
 			void open_lib(const char *name, openlib_func lib);
 
+			/**
+			 * Registers usual Lua function under \p name name.
+			 */
 			void register_function(const std::string& name, lua_CFunction function);
 
+			/**
+			 * Registers C++ functor.
+			 *
+			 * This function automatically gets parameters for your function from the Lua
+			 * stack and places results back.
+			 *
+			 * This template specification is for functors that have destructor. And prepares
+			 * proper metatable for garbage collector.
+			 *
+			 * \note The functor is placed on Lua stack and is managed by Lua. So that,
+			 *     the functor should have move or copy constructor.
+			 */
 			template<typename F>
 			typename std::enable_if<!std::is_pod<F>::value, void>::type
 					register_function(const std::string& name, F function) {
@@ -73,6 +136,15 @@ namespace Luagame {
 				lua_setglobal(state.get(), name.c_str());
 			}
 
+			/**
+			 * Registers C++ functor.
+			 *
+			 * This function automatically gets parameters for your function from the Lua
+			 * stack and places results back.
+			 *
+			 * This template specification is for PODs and doesn't allocate metatable for
+			 * functor. But functor itself is still placed on the Lua stack.
+			 */
 			template<typename F>
 			typename std::enable_if<std::is_pod<F>::value && !std::is_pointer<F>::value, void>::type
 					register_function(const std::string& name, F function) {
@@ -84,6 +156,15 @@ namespace Luagame {
 				lua_setglobal(state.get(), name.c_str());
 			}
 
+			/**
+			 * Registers C++ function.
+			 *
+			 * This function automatically gets parameters for your function from the Lua
+			 * stack and places results back.
+			 *
+			 * This template specification is for pointers and just stores the pointer
+			 * itself as light user data.
+			 */
 			template<typename F>
 			typename std::enable_if<std::is_pod<F>::value && std::is_pointer<F>::value, void>::type
 					register_function(const std::string& name, F function) {
@@ -93,13 +174,26 @@ namespace Luagame {
 				lua_setglobal(state.get(), name.c_str());
 			}
 
+			/**
+			 * Places value in the global table.
+			 */
 			template<typename T>
 			void register_value(const std::string& name, T value) {
 				Luagame_impl::put_value(state.get(), value);
 				lua_setglobal(state.get(), name.c_str());
 			}
 
-			void set_hook(lua_Hook func, Luamask mask, int count = 0);
+			/**
+			 * Sets a function which will be called on every occurrence of given event.
+			 *
+			 * \param count used only with \c Luamask::Count. Hook will be called after
+			 *     every \p count instructions.
+			 *
+			 * \see Luamask
+			 */
+			void set_hook(lua_Hook func, Luamask mask, int count = 0) {
+				lua_sethook(state.get(), func, static_cast<int>(mask), count);
+			}
 
 		private:
 

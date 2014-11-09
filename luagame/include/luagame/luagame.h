@@ -22,7 +22,7 @@ namespace Luagame {
 			}
 
 			/**
-			 * Run all containing Luaboxes.
+			 * Run all contained Luaboxes.
 			 *
 			 * Currently it implements simple round-robin strategy.
 			 */
@@ -30,7 +30,7 @@ namespace Luagame {
 
 			/**
 			 * Yields execution of current box.
-			 * 
+			 *
 			 * Beware that this uses static \c thread_local field,
 			 * so that you can't run multiple Luagames in the same thread.
 			 */

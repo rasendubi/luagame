@@ -8,10 +8,12 @@ extern "C" {
 #include "function_traits.h"
 
 namespace Luagame_impl {
+
+	/** Gets value from lua stack at given index \p n */
 	template<typename Arg>
 	Arg get_arg(lua_State *state, int n);
 
-	/* Puts value on lua stack and return number of values */
+	/** Puts value on lua stack and returns number of values */
 	template<typename R>
 	int put_value(lua_State *state, R result);
 

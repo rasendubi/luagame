@@ -10,19 +10,11 @@ Luagame::Luabox::Luabox() throw (Luagame::Lua_error)
 	}
 }
 
-Luagame::Luabox::Luabox(Luabox&& box)
-		: state(std::move(box.state)) {
-}
-
-Luagame::Luabox& Luagame::Luabox::operator=(Luagame::Luabox&& box) {
-	state = std::move(box.state);
-	return *this;
-}
-
-void Luagame::Luabox::run_file(const char *filename) {
-	int ret = luaL_dofile(state.get(), filename);
+void Luagame::Luabox::run_file(const std::string& filename) {
+	int ret = luaL_dofile(state.get(), filename.c_str());
 	if (ret) {
-		throw Lua_error(std::string("Error executing file ") + filename, lua_tostring(state.get(), -1));
+		throw Lua_error("Error executing file " + filename,
+				lua_tostring(state.get(), -1));
 	}
 }
 
@@ -50,8 +42,4 @@ void Luagame::Luabox::open_lib(const char *name, openlib_func lib) {
 void Luagame::Luabox::register_function(const std::string& name, lua_CFunction function) {
 	lua_pushcfunction(state.get(), function);
 	lua_setglobal(state.get(), name.c_str());
-}
-
-void Luagame::Luabox::set_hook(lua_Hook func, Luagame::Luamask mask, int count) {
-	lua_sethook(state.get(), func, static_cast<int>(mask), count);
 }
