@@ -26,6 +26,22 @@ void Luagame::Luabox::run_file(const char *filename) {
 	}
 }
 
+void Luagame::Luabox::set_file(const std::string& filename) {
+	int ret = luaL_loadfile(state.get(), filename.c_str());
+	if (ret) {
+		throw Lua_error("Error loading file " + filename,
+				lua_tostring(state.get(), -1));
+	}
+}
+
+void Luagame::Luabox::run() {
+	int ret = lua_pcall(state.get(), 0, LUA_MULTRET, 0);
+	if (ret) {
+		throw Lua_error("Error running",
+				lua_tostring(state.get(), -1));
+	}
+}
+
 void Luagame::Luabox::open_lib(const char *name, openlib_func lib) {
 	luaL_requiref(state.get(), name, lib, 1);
 	lua_pop(state.get(), 1);

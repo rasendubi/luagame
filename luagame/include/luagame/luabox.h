@@ -37,6 +37,10 @@ namespace Luagame {
 			 */
 			Luabox() throw (Lua_error);
 
+			Luabox(const std::string& filename) : Luabox() {
+				set_file(filename);
+			}
+
 			Luabox(const Luabox&) = delete;
 			Luabox(Luabox&& box);
 
@@ -44,6 +48,10 @@ namespace Luagame {
 			Luabox& operator=(Luabox&& box);
 
 			void run_file(const char *filename);
+
+			void set_file(const std::string& filename);
+
+			void run();
 
 			void open_lib(const char *name, openlib_func lib);
 
