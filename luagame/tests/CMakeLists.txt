@@ -1,3 +1,4 @@
+project(luagame_test)
 ADD_SUBDIRECTORY(maze)
 
 SET(TEST_SOURCES
@@ -17,9 +18,9 @@ INCLUDE_DIRECTORIES(
 	${Boost_INCLUDE_DIR}
 )
 
-ADD_EXECUTABLE(tests ${TEST_SOURCES})
+ADD_EXECUTABLE(luagame_tests ${TEST_SOURCES})
 
-TARGET_LINK_LIBRARIES(tests
+TARGET_LINK_LIBRARIES(luagame_tests
 	luagame
 	${GTEST_LIBRARIES}
 	${Boost_LIBRARIES}
@@ -27,10 +28,10 @@ TARGET_LINK_LIBRARIES(tests
 )
 
 ADD_CUSTOM_COMMAND(
-	TARGET tests
+	TARGET luagame_tests
 	POST_BUILD
 	COMMAND cmake -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/files
-		$<TARGET_FILE_DIR:tests>/files
+		$<TARGET_FILE_DIR:luagame_tests>/files
 	DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/files/*")
 
-GTEST_ADD_TESTS(tests "" ${TEST_SOURCES})
+GTEST_ADD_TESTS(luagame_tests "" ${TEST_SOURCES})
