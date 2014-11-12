@@ -195,10 +195,19 @@ namespace Luagame {
 				lua_sethook(state.get(), func, static_cast<int>(mask), count);
 			}
 
+			template<typename T>
+			T get(const std::string& name) {
+				lua_getglobal(state.get(), name.c_str());
+				T result = Luagame_impl::get_arg<T>(state.get(), -1);
+				lua_pop(state.get(), 1);
+				return result;
+			}
+
 		private:
 
 			std::unique_ptr<lua_State, void (*)(lua_State *)> state;
 	};
+
 }
 
 #endif /* LUAGAME_LUABOX_H_ */
